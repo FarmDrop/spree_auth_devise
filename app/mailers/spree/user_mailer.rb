@@ -6,6 +6,7 @@ module Spree
       mail(:to => user.email, :from => from_address,
           :subject => Spree::Config[:site_name] + ' ' + 
             I18n.t(:subject, :scope => [:devise, :mailer, :reset_password_instructions]))
+
     end
   end
 end

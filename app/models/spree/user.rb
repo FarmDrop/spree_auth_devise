@@ -13,7 +13,7 @@ module Spree
     before_destroy :check_completed_orders
 
     # Setup accessible (or protected) attributes for your model
-    # attr_accessible :email, :password, :password_confirmation, :remember_me, :persistence_token, :login
+     attr_accessible :email, :password, :remember_me, :persistence_token, :authentication_token, :login, :bill_address
 
     users_table_name = User.table_name
     roles_table_name = Role.table_name
@@ -31,12 +31,19 @@ module Spree
       User.create(:email => "#{token}@example.net", :password => token, :password_confirmation => token, :persistence_token => token)
     end
 
+
+
     def self.admin_created?
       User.admin.count > 0
     end
 
     def admin?
       has_spree_role?('admin')
+    end
+
+    def generate_auth_token
+      token = User.generate_token(:authentication_token)
+      self.authentication_token = token
     end
 
     def anonymous?

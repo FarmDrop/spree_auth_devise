@@ -3,7 +3,7 @@
 Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in DeviseMailer.
-  config.mailer_sender = 'please-change-me@config-initializers-devise.com'
+  config.mailer_sender = 'hello@farmdrop.co.uk'
 
   # Configure the class responsible to send e-mails.
   config.mailer = 'Spree::UserMailer'
@@ -53,7 +53,7 @@ Devise.setup do |config|
 
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
-  # config.remember_for = 2.weeks
+   config.remember_for = 6.days
 
   # If true, a valid remember token can be re-used between multiple browsers.
   # config.remember_across_browsers = true
@@ -138,4 +138,22 @@ Devise.setup do |config|
   config.sign_out_via = :get
 
   config.case_insensitive_keys = [:email]
+end
+
+require 'devise/strategies/token_authenticatable'
+module Devise
+  module Strategies
+    class TokenAuthenticatable < Authenticatable
+      def params_auth_hash
+        return_params = if params[scope].kind_of?(Hash) && params[scope].has_key?(authentication_keys.first)
+                          params[scope]
+                        else
+                          params
+                        end
+        token = ActionController::HttpAuthentication::Token.token_and_options(request)
+        return_params.merge!(:auth_token => token[0]) if token
+        return_params
+      end
+    end
+  end
 end
