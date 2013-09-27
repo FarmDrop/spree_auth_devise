@@ -35,7 +35,7 @@ module Spree
     end
 
     def set_role(role_name)
-      role = Spree::Role.where(:name => role_in_question.to_s).first
+      role = Spree::Role.where(:name => role_name.to_s).first
       self.spree_roles <<  role
     end
 
