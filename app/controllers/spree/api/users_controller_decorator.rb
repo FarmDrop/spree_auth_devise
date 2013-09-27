@@ -30,19 +30,19 @@ Spree::Api::UsersController.class_eval do
 
         @user.bill_address = @address
 
-        if user_params["fb_auth_token"] && user_params["g_auth_token"]
+        if user_params["fb_auth_token"].present? && user_params["g_auth_token"].present?
           @user.generate_auth_token
         else
-          @user.g_auth_token ||= user_params["g_auth_token"]
-          @user.fb_auth_token ||= user_params["fb_auth_token"]
+          @user.g_auth_token = user_params["g_auth_token"]
+          @user.fb_auth_token = user_params["fb_auth_token"]
         end
 
-        @user.save
-
+        @user.set_role(user_params["role"])
         add_user_to_mailchimp(@user, @address)
         send_user_signup_confirmation(@user, @address)
-
         sign_in(:spree_user, @user)
+        @user.save
+
         respond_with(@user, :status => 200, :default_template => :show_token)
 
       else

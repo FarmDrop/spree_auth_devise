@@ -19,6 +19,9 @@ module Spree
     roles_table_name = Role.table_name
 
     scope :admin, lambda { includes(:spree_roles).where("#{roles_table_name}.name" => "admin") }
+    scope :keeper, lambda { includes(:spree_roles).where("#{roles_table_name}.name" => "keeper") }
+    scope :producer, lambda { includes(:spree_roles).where("#{roles_table_name}.name" => "producer") }
+
     scope :registered, -> { where("#{users_table_name}.email NOT LIKE ?", "%@example.net") }
 
     class DestroyWithOrdersError < StandardError; end
@@ -31,6 +34,10 @@ module Spree
       User.create(:email => "#{token}@example.net", :password => token, :password_confirmation => token, :persistence_token => token)
     end
 
+    def set_role(role_name)
+      role = Spree::Role.where(:name => role_in_question.to_s).first
+      self.spree_roles <<  role
+    end
 
 
     def self.admin_created?
@@ -39,6 +46,14 @@ module Spree
 
     def admin?
       has_spree_role?('admin')
+    end
+
+    def keeper?
+      has_spree_role?('keeper')
+    end
+
+    def producer?
+      has_spree_role?('producer')
     end
 
     def generate_auth_token
