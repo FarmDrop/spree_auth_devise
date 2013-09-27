@@ -13,7 +13,7 @@ module Spree
     before_destroy :check_completed_orders
 
     # Setup accessible (or protected) attributes for your model
-     attr_accessible :email, :password, :remember_me, :persistence_token, :authentication_token, :login, :bill_address
+     attr_accessible :email, :password, :remember_me, :persistence_token, :authentication_token, :login, :bill_address, :g_auth_token, :fb_auth_token
 
     users_table_name = User.table_name
     roles_table_name = Role.table_name
@@ -73,7 +73,7 @@ module Spree
 
       # Generate a friendly string randomically to be used as token.
       def self.friendly_token
-        SecureRandom.base64(15).tr('+/=', '-_ ').strip.delete("\n")
+        SecureRandom.base64(40).tr('+/=', '-_ ').strip.delete("\n")
       end
 
       # Generate a token by looping and ensuring does not already exist.

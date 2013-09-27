@@ -29,7 +29,14 @@ Spree::Api::UsersController.class_eval do
       if @address.save
 
         @user.bill_address = @address
-        @user.generate_auth_token
+
+        if user_params["fb_auth_token"] && user_params["g_auth_token"]
+          @user.generate_auth_token
+        else
+          @user.g_auth_token ||= user_params["g_auth_token"]
+          @user.fb_auth_token ||= user_params["fb_auth_token"]
+        end
+
         @user.save
 
         add_user_to_mailchimp(@user, @address)
@@ -103,6 +110,14 @@ Spree::Api::UsersController.class_eval do
 
 
   private
+
+
+  def check_token(user,token)
+    user.g_auth_token ||= token
+    user.fb_auth_token ||= token
+  end
+
+
 
   def user
     @user ||= Spree.user_class.accessible_by(current_ability, :read).find(params[:id])

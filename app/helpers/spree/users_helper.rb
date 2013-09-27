@@ -11,5 +11,7 @@ module Spree
         'Please install the spree_social gem to regain this functionality and more.'
       'display:none'
     end
+
+
   end
 end
